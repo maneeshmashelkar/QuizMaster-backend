@@ -1,0 +1,127 @@
+---
+alwaysApply: false
+---
+# Quiz Management System Backend API
+
+## Project Structure
+
+```
+backend/
+├── src/
+│   ├── models/
+│   │   ├── User.js
+│   │   ├── Admin.js
+│   │   ├── Quiz.js
+│   │   └── Result.js
+│   ├── routes/
+│   │   ├── auth.js
+│   │   ├── admin.js
+│   │   ├── quiz.js
+│   │   └── result.js
+│   ├── middleware/
+│   │   ├── authMiddleware.js
+│   │   └── adminMiddleware.js
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── adminController.js
+│   │   ├── quizController.js
+│   │   └── resultController.js
+│   ├── config/
+│   │   └── db.js
+│   └── server.js
+├── .env
+└── package.json
+```
+
+## Implementation Steps
+
+### 1. Dependencies & Configuration
+
+- Install: `express`, `mongoose`, `cors`, `jsonwebtoken`, `bcryptjs`, `dotenv`
+- Update `package.json` with start scripts
+- Create `.env` for MongoDB URI, JWT secrets, and port
+- Setup database connection in `config/db.js`
+
+### 2. Models
+
+**Admin Model** (`models/Admin.js`):
+
+- Fields: name, email, password (hashed)
+- Separate collection from regular users
+
+**User Model** (`models/User.js`):
+
+- Fields: name, email, password (hashed)
+- Optional registration for tracking quiz history
+
+**Quiz Model** (`models/Quiz.js`):
+
+- Fields: title, questions[], createdBy (admin ref), createdAt
+- Questions schema: { questionText, type (MCQ/TrueFalse/Text), options[], correctAnswer }
+
+**Result Model** (`models/Result.js`):
+
+- Fields: quizId (ref), userId (optional ref), answers[], score, totalQuestions, submittedAt, isAnonymous
+
+### 3. Authentication Controllers & Routes
+
+**Admin Auth** (`controllers/adminController.js`):
+
+- POST `/api/admin/register` - Admin signup
+- POST `/api/admin/login` - Admin login (returns JWT)
+
+**User Auth** (`controllers/authController.js`):
+
+- POST `/api/auth/register` - User signup (optional)
+- POST `/api/auth/login` - User login (returns JWT)
+
+### 4. Quiz Management (Admin Only)
+
+**Quiz Controller** (`controllers/quizController.js`):
+
+- POST `/api/admin/quiz` - Create quiz (admin auth required)
+- GET `/api/admin/quiz` - Get all quizzes created by admin
+- PUT `/api/admin/quiz/:id` - Update quiz (admin auth required)
+- DELETE `/api/admin/quiz/:id` - Delete quiz (admin auth required)
+
+### 5. Public Quiz Endpoints
+
+**Public Quiz Routes**:
+
+- GET `/api/quiz` - List all available quizzes (public)
+- GET `/api/quiz/:id` - Get specific quiz details without answers (public)
+- POST `/api/quiz/:id/submit` - Submit quiz answers (anonymous or authenticated)
+  - Calculate score with case-insensitive matching for text answers
+  - Store result in database
+  - Return score and correct answers
+
+### 6. Middleware
+
+**authMiddleware.js**:
+
+- Verify JWT token for optional user authentication
+- Attach user to request if token exists
+
+**adminMiddleware.js**:
+
+- Verify admin JWT token
+- Protect admin-only routes
+
+### 7. Server Setup
+
+- Initialize Express app in `server.js`
+- Configure CORS
+- Setup body parser
+- Mount all routes
+- Error handling middleware
+- Start server on configured port
+
+## Key Features
+
+- Separate admin authentication system
+- Optional user login (anonymous quiz-taking allowed)
+- All quiz submissions stored in database
+- Case-insensitive text answer validation
+- JWT-based authentication
+- Protected admin routes
+- Public quiz access
