@@ -1,0 +1,529 @@
+{
+  "info": {
+    "name": "Quiz Management System API",
+    "description": "Complete API collection for testing Quiz Management System backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "quizId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Admin Authentication",
+      "item": [
+        {
+          "name": "Admin Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin User\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "register"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('adminToken', response.token);",
+                  "    console.log('Admin token saved:', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('adminToken', response.token);",
+                  "    console.log('Admin token saved:', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "User Authentication",
+      "item": [
+        {
+          "name": "User Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"user@example.com\",\n  \"password\": \"user123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('userToken', response.token);",
+                  "    console.log('User token saved:', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "User Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"user123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('userToken', response.token);",
+                  "    console.log('User token saved:', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Quiz Management (Admin)",
+      "item": [
+        {
+          "name": "Create Quiz",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"JavaScript Fundamentals Quiz\",\n  \"questions\": [\n    {\n      \"questionText\": \"What is the correct way to declare a variable in JavaScript?\",\n      \"type\": \"MCQ\",\n      \"options\": [\"var x = 5;\", \"variable x = 5;\", \"v x = 5;\", \"declare x = 5;\"],\n      \"correctAnswer\": \"var x = 5;\"\n    },\n    {\n      \"questionText\": \"JavaScript is a case-sensitive language.\",\n      \"type\": \"TrueFalse\",\n      \"options\": [\"True\", \"False\"],\n      \"correctAnswer\": \"True\"\n    },\n    {\n      \"questionText\": \"What does DOM stand for?\",\n      \"type\": \"Text\",\n      \"options\": [],\n      \"correctAnswer\": \"Document Object Model\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/quiz",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "quiz"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('quizId', response.quiz._id);",
+                  "    console.log('Quiz ID saved:', response.quiz._id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Admin Quizzes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/quiz",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "quiz"]
+            }
+          }
+        },
+        {
+          "name": "Update Quiz",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated JavaScript Fundamentals Quiz\",\n  \"questions\": [\n    {\n      \"questionText\": \"What is the correct way to declare a variable in JavaScript?\",\n      \"type\": \"MCQ\",\n      \"options\": [\"var x = 5;\", \"let x = 5;\", \"const x = 5;\", \"All of the above\"],\n      \"correctAnswer\": \"All of the above\"\n    },\n    {\n      \"questionText\": \"JavaScript is a case-sensitive language.\",\n      \"type\": \"TrueFalse\",\n      \"options\": [\"True\", \"False\"],\n      \"correctAnswer\": \"True\"\n    },\n    {\n      \"questionText\": \"What does DOM stand for?\",\n      \"type\": \"Text\",\n      \"options\": [],\n      \"correctAnswer\": \"Document Object Model\"\n    },\n    {\n      \"questionText\": \"Which method is used to add an element to the end of an array?\",\n      \"type\": \"MCQ\",\n      \"options\": [\"push()\", \"pop()\", \"shift()\", \"unshift()\"],\n      \"correctAnswer\": \"push()\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/quiz/{{quizId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "quiz", "{{quizId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Quiz",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/quiz/{{quizId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "quiz", "{{quizId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Public Quiz Access",
+      "item": [
+        {
+          "name": "Get All Quizzes (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/quiz",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quiz"]
+            }
+          }
+        },
+        {
+          "name": "Get Quiz by ID (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/quiz/{{quizId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quiz", "{{quizId}}"]
+            }
+          }
+        },
+        {
+          "name": "Submit Quiz (Anonymous)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answers\": [\n    {\n      \"answer\": \"var x = 5;\"\n    },\n    {\n      \"answer\": \"True\"\n    },\n    {\n      \"answer\": \"Document Object Model\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/quiz/{{quizId}}/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quiz", "{{quizId}}", "submit"]
+            }
+          }
+        },
+        {
+          "name": "Submit Quiz (Authenticated User)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answers\": [\n    {\n      \"answer\": \"All of the above\"\n    },\n    {\n      \"answer\": \"True\"\n    },\n    {\n      \"answer\": \"document object model\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/quiz/{{quizId}}/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quiz", "{{quizId}}", "submit"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Results",
+      "item": [
+        {
+          "name": "Get My Results",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/result/my-results",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "result", "my-results"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Test Cases",
+      "item": [
+        {
+          "name": "Test Case 1: MCQ Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answers\": [\n    {\n      \"answer\": \"var x = 5;\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/quiz/{{quizId}}/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quiz", "{{quizId}}", "submit"]
+            }
+          }
+        },
+        {
+          "name": "Test Case 2: True/False Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answers\": [\n    {\n      \"answer\": \"True\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/quiz/{{quizId}}/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quiz", "{{quizId}}", "submit"]
+            }
+          }
+        },
+        {
+          "name": "Test Case 3: Text Question (Case Insensitive)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answers\": [\n    {\n      \"answer\": \"document object model\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/quiz/{{quizId}}/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quiz", "{{quizId}}", "submit"]
+            }
+          }
+        },
+        {
+          "name": "Test Case 4: Wrong Answers",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answers\": [\n    {\n      \"answer\": \"wrong answer\"\n    },\n    {\n      \"answer\": \"False\"\n    },\n    {\n      \"answer\": \"wrong text answer\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/quiz/{{quizId}}/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quiz", "{{quizId}}", "submit"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Error Handling Tests",
+      "item": [
+        {
+          "name": "Create Quiz Without Auth",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Test Quiz\",\n  \"questions\": []\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/quiz",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "quiz"]
+            }
+          }
+        },
+        {
+          "name": "Submit Quiz with Wrong Number of Answers",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answers\": [\n    {\n      \"answer\": \"only one answer\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/quiz/{{quizId}}/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quiz", "{{quizId}}", "submit"]
+            }
+          }
+        },
+        {
+          "name": "Get Non-existent Quiz",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/quiz/507f1f77bcf86cd799439011",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quiz", "507f1f77bcf86cd799439011"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
