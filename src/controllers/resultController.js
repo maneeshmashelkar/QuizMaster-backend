@@ -64,7 +64,8 @@ const submitQuiz = async (req, res) => {
         totalQuestions: quiz.questions.length,
         percentage: Math.round((score / quiz.questions.length) * 100),
         submittedAt: result.submittedAt,
-        isAnonymous: result.isAnonymous
+        isAnonymous: result.isAnonymous,
+        answers: processedAnswers
       },
       correctAnswers
     });
